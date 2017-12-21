@@ -1,37 +1,43 @@
 ﻿using CoinGram.Common;
+using CoinGram.Common.Coinigy;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace CoinGram
 {
     class Program
     {
         private readonly ILogger<Program> _logger;
+        private readonly Application _application;
         private readonly AppSettings _appSettings;
 
-        public Program(ILogger<Program> logger, IOptions<AppSettings> appSettings)
+        public Program(ILogger<Program> logger, IOptions<AppSettings> appSettings, Application application)
         {
             _logger = logger;
+            _application = application;
             _appSettings = appSettings.Value;
         }
 
-        private void Run()
+        private async Task Run()
         {
-            _logger.LogInformation($"coingram is starting with version {_appSettings.Version}...");
-            _logger.LogError(_appSettings.TelegramApiKey);
+            _logger.LogInformation($"coingram is starting with version {_appSettings.Version}");
+
+            await _application.InitializeAsync();
         }
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            serviceProvider.GetService<Program>().Run();
+            await serviceProvider.GetService<Program>().Run();
 
             Console.ReadLine();
         }
@@ -44,11 +50,16 @@ namespace CoinGram
                .AddJsonFile("appsettings.private.json", optional: true, reloadOnChange: false)
                .Build();
 
+            var appSettings = configuration.GetSection("Configuration").Get<AppSettings>();
+
             serviceCollection
                 .AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddConsole().AddDebug())
                 .AddOptions()
                 .Configure<AppSettings>(configuration.GetSection("Configuration"))
-                .AddSingleton<Program, Program>();
+                .AddSingleton<Program, Program>()
+                .AddTransient<Application, Application>()
+                .AddSingleton(new CoinigyApiClient(appSettings.CoinigyApiKey, appSettings.CoinigyApiSecret))
+                .AddMediatR();
         }
     }
 }
