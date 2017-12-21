@@ -7,7 +7,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot;
 
 namespace CoinGram
 {
@@ -24,11 +26,12 @@ namespace CoinGram
             _appSettings = appSettings.Value;
         }
 
-        private async Task Run()
+        private async Task RunAsync()
         {
             _logger.LogInformation($"coingram is starting with version {_appSettings.Version}");
 
             await _application.InitializeAsync();
+            await _application.RunAsync(CancellationToken.None);
         }
 
         static async Task Main(string[] args)
@@ -37,7 +40,7 @@ namespace CoinGram
             ConfigureServices(serviceCollection);
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            await serviceProvider.GetService<Program>().Run();
+            await serviceProvider.GetService<Program>().RunAsync();
 
             Console.ReadLine();
         }
@@ -59,6 +62,7 @@ namespace CoinGram
                 .AddSingleton<Program, Program>()
                 .AddTransient<Application, Application>()
                 .AddSingleton(new CoinigyApiClient(appSettings.CoinigyApiKey, appSettings.CoinigyApiSecret))
+                .AddSingleton<ITelegramBotClient>(new TelegramBotClient(appSettings.TelegramApiKey))
                 .AddMediatR();
         }
     }

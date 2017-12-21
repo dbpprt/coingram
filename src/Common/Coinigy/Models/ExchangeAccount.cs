@@ -5,6 +5,7 @@ namespace CoinGram.Common.Coinigy.Models
 {
     class ExchangeAccount
     {
+        [JsonConverter(typeof(BoolConverter))]
         [JsonProperty("auth_active")]
         public bool AuthActive { get; set; }
 
@@ -23,6 +24,7 @@ namespace CoinGram.Common.Coinigy.Models
         [JsonProperty("auth_secret")]
         public string AuthSecret { get; set; }
 
+        [JsonConverter(typeof(BoolConverter))]
         [JsonProperty("auth_trade")]
         public bool AuthTradingEnabled { get; set; }
 
@@ -35,6 +37,7 @@ namespace CoinGram.Common.Coinigy.Models
         [JsonProperty("exch_name")]
         public string Name { get; set; }
 
+        [JsonConverter(typeof(BoolConverter))]
         [JsonProperty("exch_trade_enabled")]
         public bool TradingEnabled { get; set; }
     }

@@ -52,7 +52,7 @@ namespace CoinGram.Common.Coinigy
 
         public async Task<IEnumerable<ExchangeAccount>> GetExchangeAccountsAsync()
         {
-            return (await HttpPostRequestAsync<AccountsResponse>("balances", new List<KeyValuePair<string, string>>())).ExchangeAccounts;
+            return (await HttpPostRequestAsync<AccountsResponse>("accounts", new List<KeyValuePair<string, string>>())).ExchangeAccounts;
         }
     }
 }
