@@ -2,5 +2,5 @@
 
 namespace CoinGram.Handlers.Models
 {
-    class StartBalanceSynchronizationNotification : INotification { }
+    public class StartBalanceSynchronizationNotification : INotification { }
 }

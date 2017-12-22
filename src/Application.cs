@@ -68,7 +68,13 @@ namespace CoinGram
                 {
                     case 0:
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                        _mediator.Publish(new StartBalanceSynchronizationNotification());
+                        _mediator.Publish(new StartBalanceSynchronizationNotification(), cancellationToken);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                        break;
+
+                    case 30:
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                        _mediator.Publish(new StartWatchlistSynchronizationNotification(), cancellationToken);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         break;
                 }

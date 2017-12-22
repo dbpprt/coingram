@@ -2,7 +2,7 @@
 
 namespace CoinGram.Common.Coinigy.Models
 {
-    class Balance
+    public class Balance
     {
         [JsonProperty("balance_amount_avail")]
         public decimal AmountAvailable { get; set; }

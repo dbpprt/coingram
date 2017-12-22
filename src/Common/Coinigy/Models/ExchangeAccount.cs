@@ -3,7 +3,7 @@ using System;
 
 namespace CoinGram.Common.Coinigy.Models
 {
-    class ExchangeAccount
+    public class ExchangeAccount
     {
         [JsonConverter(typeof(BoolConverter))]
         [JsonProperty("auth_active")]

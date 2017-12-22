@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CoinGram.Common.Coinigy.Models
 {
-    class BalancesResponse
+    public class BalancesResponse
     {
         [JsonProperty("data")]
         public List<Balance> Balances { get; set; }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CoinGram.Handlers
 {
-    class BalanceSynchronizationHandler : INotificationHandler<StartBalanceSynchronizationNotification>
+    public class BalanceSynchronizationHandler : INotificationHandler<StartBalanceSynchronizationNotification>
     {
         private readonly ILogger<BalanceSynchronizationHandler> _logger;
         private readonly CoinigyApiClient _coinigyApiClient;
@@ -39,6 +39,8 @@ namespace CoinGram.Handlers
                     Balances = balances
                 });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
+                _logger.LogInformation("balances successfully synchronized!");
             }
             catch (Exception e)
             {

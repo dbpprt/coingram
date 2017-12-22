@@ -3,12 +3,11 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CoinGram.Common.Coinigy
 {
-    class CoinigyApiClient
+    public class CoinigyApiClient
     {
         private readonly string _serverBaseUrl;
         private readonly string _userAgent;
@@ -48,6 +47,11 @@ namespace CoinGram.Common.Coinigy
                 new KeyValuePair<string, string>("show_nils", Convert.ToInt32(showNullBalances).ToString()),
                 new KeyValuePair<string, string>("auth_ids", authenticationIds)
             })).Balances;
+        }
+
+        public async Task<IEnumerable<WatchedCurrency>> GetWatchlistAsync()
+        {
+            return (await HttpPostRequestAsync<WatchlistResponse>("userWatchList", new List<KeyValuePair<string, string>>())).Currencies;
         }
 
         public async Task<IEnumerable<ExchangeAccount>> GetExchangeAccountsAsync()

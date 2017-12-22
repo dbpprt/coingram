@@ -1,5 +1,6 @@
 ﻿using CoinGram.Common;
 using CoinGram.Common.Coinigy;
+using InfluxDB.LineProtocol.Client;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -54,7 +56,7 @@ namespace CoinGram
                .Build();
 
             var appSettings = configuration.GetSection("Configuration").Get<AppSettings>();
-
+            
             serviceCollection
                 .AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddConsole().AddDebug())
                 .AddOptions()
@@ -63,7 +65,9 @@ namespace CoinGram
                 .AddTransient<Application, Application>()
                 .AddSingleton(new CoinigyApiClient(appSettings.CoinigyApiKey, appSettings.CoinigyApiSecret))
                 .AddSingleton<ITelegramBotClient>(new TelegramBotClient(appSettings.TelegramApiKey))
-                .AddMediatR();
+                .AddSingleton(new LineProtocolClient(new Uri(appSettings.InfluxDbHost), appSettings.InfluxDbDatabase, appSettings.InfluxDbUser, appSettings.InfluxDbPassword))
+                .AddMediatR(Assembly.GetExecutingAssembly());
+               
         }
     }
 }
